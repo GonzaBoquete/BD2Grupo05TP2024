@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import com.api.dao.ClienteDAO;
 import com.api.dao.EmpleadoDAO;
 import com.api.dao.ProductoDAO;
@@ -22,7 +20,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
-@SpringBootApplication
 public class AltaClases {
 
 	public static void main(String[] args) {
@@ -35,47 +32,42 @@ public class AltaClases {
 		VentaDAO ventaDAO = new VentaDAO(database);
 
 		// Crear sucursales
-		Sucursal sucursal1 = new Sucursal(1, "Calle 100", null);
-		Sucursal sucursal2 = new Sucursal(2, "Calle 200", null);
-		Sucursal sucursal3 = new Sucursal(3, "Calle 300", null);
+		Sucursal sucursal1 = new Sucursal(1, "Calle 100");
+		sucursalDAO.insertarSucursal(sucursal1);
+		Sucursal sucursal2 = new Sucursal(2, "Calle 200");
+		sucursalDAO.insertarSucursal(sucursal2);
+		Sucursal sucursal3 = new Sucursal(3, "Calle 300");
+		sucursalDAO.insertarSucursal(sucursal3);
 
 		// Crear encargados y guardar
 		Empleado encargado1 = new Empleado(98765432, "López", "Pedro", "Av. Secundaria 1", "OSDE", "123456",
-				"20123456789", true);
+				"20123456789", true, sucursal1);
 		empleadoDAO.insertarEmpleado(encargado1);
 		Empleado encargado2 = new Empleado(87654321, "Martínez", "Ana", "Av. Secundaria 2", "SWISS", "234567",
-				"30123456789", true);
+				"30123456789", true, sucursal2);
 		empleadoDAO.insertarEmpleado(encargado2);
 		Empleado encargado3 = new Empleado(76543210, "García", "Juan", "Av. Secundaria 3", "ACCORD", "345678",
-				"40123456789", true);
+				"40123456789", true, sucursal3);
 		empleadoDAO.insertarEmpleado(encargado3);
 
-		// Asignar encargados a sucursales y guardar
-		sucursal1.setEncargado(encargado1);
-		sucursalDAO.insertarSucursal(sucursal1);
-		sucursal2.setEncargado(encargado2);
-		sucursalDAO.insertarSucursal(sucursal2);
-		sucursal3.setEncargado(encargado3);
-		sucursalDAO.insertarSucursal(sucursal3);
-
-		// Crear empleados y guardar
+		// Crear vendedores y guardar
 		Empleado vendedor1_1 = new Empleado(12345678, "Fernández", "Carlos", "Calle 1", "OSDE", "456789", "50123456789",
-				false);
+				false, sucursal1);
 		empleadoDAO.insertarEmpleado(vendedor1_1);
 		Empleado vendedor1_2 = new Empleado(23456789, "Pérez", "Laura", "Calle 2", "SWISS", "567890", "60123456789",
-				false);
+				false, sucursal1);
 		empleadoDAO.insertarEmpleado(vendedor1_2);
 		Empleado vendedor2_1 = new Empleado(34567890, "Gómez", "Luis", "Calle 3", "ACCORD", "678901", "70123456789",
-				false);
+				false, sucursal2);
 		empleadoDAO.insertarEmpleado(vendedor2_1);
 		Empleado vendedor2_2 = new Empleado(45678901, "Ramírez", "Sofía", "Calle 4", "OSDE", "789012", "80123456789",
-				false);
+				false, sucursal2);
 		empleadoDAO.insertarEmpleado(vendedor2_2);
 		Empleado vendedor3_1 = new Empleado(56789012, "Díaz", "María", "Calle 5", "SWISS", "890123", "90123456789",
-				false);
+				false, sucursal3);
 		empleadoDAO.insertarEmpleado(vendedor3_1);
 		Empleado vendedor3_2 = new Empleado(67890123, "Alonso", "Pedro", "Calle 6", "ACCORD", "901234", "10123456789",
-				false);
+				false, sucursal3);
 		empleadoDAO.insertarEmpleado(vendedor3_2);
 
 		// Crear clientes y guardar
@@ -111,35 +103,35 @@ public class AltaClases {
 		}
 
 		// Crear ventas y guardar
-        List<Venta> ventas = new ArrayList<>();
-        int[] ventasPorSucursal = { 24, 30, 36 }; // Promedio 30 ventas con +/- 20%
-        int ventasGeneradas = 0;
-        Random random = new Random();
-        for (int s = 0; s < 3; s++) {
-            Empleado[] vendedores = (s == 0) ? new Empleado[] { vendedor1_1, vendedor1_2, encargado1 }
-                    : (s == 1) ? new Empleado[] { vendedor2_1, vendedor2_2, encargado2 }
-                    : new Empleado[] { vendedor3_1, vendedor3_2, encargado3 };
+		List<Venta> ventas = new ArrayList<>();
+		int[] ventasPorSucursal = { 24, 30, 36 }; // Promedio 30 ventas con +/- 20%
+		int ventasGeneradas = 0;
+		Random random = new Random();
+		for (int s = 0; s < 3; s++) {
+			Empleado[] vendedores = (s == 0) ? new Empleado[] { vendedor1_1, vendedor1_2, encargado1 }
+					: (s == 1) ? new Empleado[] { vendedor2_1, vendedor2_2, encargado2 }
+							: new Empleado[] { vendedor3_1, vendedor3_2, encargado3 };
 
-            for (int i = 0; i < ventasPorSucursal[s]; i++) {
-                Empleado atendidoPor = vendedores[random.nextInt(3)];
-                Empleado cobradoPor = vendedores[random.nextInt(3)];
-                Cliente cliente = clientes.get(random.nextInt(clientes.size()));
-                int cantidadProductos = 1 + random.nextInt(3); // Entre 1 y 3 productos por venta
-                List<DetalleVenta> detallesVenta = new ArrayList<>();
-                for (int j = 0; j < cantidadProductos; j++) {
-                    Producto producto = productos.get(random.nextInt(productos.size()));
-                    int cantidad = 1 + random.nextInt(5); // Cantidad de cada producto entre 1 y 5
-                    float precioUnidad = producto.getPrecio();
-                    DetalleVenta detalleVenta = new DetalleVenta(producto, cantidad, precioUnidad);
-                    detallesVenta.add(detalleVenta);
-                }
-                float total = (float) detallesVenta.stream().mapToDouble(d -> d.getTotal()).sum();
-                Venta venta = new Venta(ventasGeneradas + 1, LocalDate.now(), total, "Efectivo", cliente,
-                        atendidoPor, cobradoPor, detallesVenta);
-                ventas.add(venta);
-                ventaDAO.insertarVenta(venta);
-                ventasGeneradas++;
-            }
+			for (int i = 0; i < ventasPorSucursal[s]; i++) {
+				Empleado atendidoPor = vendedores[random.nextInt(3)];
+				Empleado cobradoPor = vendedores[random.nextInt(3)];
+				Cliente cliente = clientes.get(random.nextInt(clientes.size()));
+				int cantidadProductos = 1 + random.nextInt(3); // Entre 1 y 3 productos por venta
+				List<DetalleVenta> detallesVenta = new ArrayList<>();
+				for (int j = 0; j < cantidadProductos; j++) {
+					Producto producto = productos.get(random.nextInt(productos.size()));
+					int cantidad = 1 + random.nextInt(5); // Cantidad de cada producto entre 1 y 5
+					float precioUnidad = producto.getPrecio();
+					DetalleVenta detalleVenta = new DetalleVenta(producto, cantidad, precioUnidad);
+					detallesVenta.add(detalleVenta);
+				}
+				float total = (float) detallesVenta.stream().mapToDouble(d -> d.getTotal()).sum();
+				Venta venta = new Venta(ventasGeneradas + 1, LocalDate.now(), total, "Efectivo", cliente, atendidoPor,
+						cobradoPor, detallesVenta);
+				ventas.add(venta);
+				ventaDAO.insertarVenta(venta);
+				ventasGeneradas++;
+			}
 		}
 		mongoClient.close();
 	}

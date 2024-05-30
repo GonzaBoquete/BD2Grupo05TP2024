@@ -3,13 +3,11 @@ package com.api.model;
 public class Sucursal {
 	private int idSucursal;
 	private String domicilio;
-	private Empleado encargado;
 
 	// Constructor
-	public Sucursal(int idSucursal, String domicilio, Empleado encargado) {
+	public Sucursal(int idSucursal, String domicilio) {
 		this.idSucursal = idSucursal;
 		this.domicilio = domicilio;
-		this.encargado = encargado;
 	}
 
 	// Getters y Setters
@@ -29,19 +27,9 @@ public class Sucursal {
 		this.domicilio = domicilio;
 	}
 
-	public Empleado getEncargado() {
-		return encargado;
-	}
-
-	public void setEncargado(Empleado encargadoEmpleado) {
-		this.encargado = encargadoEmpleado;
-	}
-
 	@Override
 	public String toString() {
-		String encargadoInfo = (encargado != null) ? encargado.getApellido() + ", " + encargado.getNombre()
-				: "Ningún encargado asignado";
-		return "Sucursal [idSucursal=" + idSucursal + ", domicilio=" + domicilio + ", encargado=" + encargadoInfo + "]";
+		return "Sucursal [idSucursal=" + idSucursal + ", domicilio=" + domicilio + "]";
 	}
 
 }
