@@ -74,10 +74,10 @@ public class AltaClases {
 		List<Cliente> clientes = new ArrayList<>();
 		clientes.add(new Cliente(12345678, "González", "María", "Calle 123", "OSDE", "123456"));
 		clientes.add(new Cliente(23456789, "Rodríguez", "Juan", "Calle 234", "SWISS", "234567"));
-		clientes.add(new Cliente(34567890, "López", "Ana", "Calle 345", "ACCORD", "345678"));
+		clientes.add(new Cliente(34567890, "López", "Ana", "Calle 345", null, null));
 		clientes.add(new Cliente(45678901, "Martínez", "Carlos", "Calle 456", "OSDE", "456789"));
 		clientes.add(new Cliente(56789012, "Gómez", "Laura", "Calle 567", "SWISS", "567890"));
-		clientes.add(new Cliente(67890123, "Pérez", "Luis", "Calle 678", "ACCORD", "678901"));
+		clientes.add(new Cliente(67890123, "Pérez", "Luis", "Calle 678", null, null));
 		clientes.add(new Cliente(78901234, "Sánchez", "Sofía", "Calle 789", "OSDE", "789012"));
 		clientes.add(new Cliente(89012345, "Ramírez", "Pedro", "Calle 890", "SWISS", "890123"));
 		clientes.add(new Cliente(90123456, "Díaz", "María", "Calle 901", "ACCORD", "901234"));
